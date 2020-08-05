@@ -1,0 +1,22 @@
+{
+    "output": ".",
+    "builds": [
+        {
+            "name": "default",
+            "data": {
+                "from": "wordpress:php7.4-fpm-alpine",
+                "version": "default"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        }
+    ]
+}
