@@ -1,3 +1,3 @@
 #! /bin/bash
 
-docker build --pull -t kooldev/wordpress ./
+docker build --pull -t kooldev/wordpress default
