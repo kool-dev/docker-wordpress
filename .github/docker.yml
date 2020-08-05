@@ -18,7 +18,7 @@ jobs:
 
     - name: Test docker images
       run: |
-        docker run kooldev/wordpress:${{ matrix.version }} wordpress -v
+        docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
     - name: Push to Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       env:
