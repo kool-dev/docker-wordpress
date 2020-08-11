@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: default
+        version: [ 7.4-fpm-alpine, 7.3-fpm-alpine, 7.2-fpm-alpine, 7.1-fpm-alpine ]
 
     steps:
     - name: Checkout code
@@ -18,7 +18,9 @@ jobs:
 
     - name: Test docker images
       run: |
+        docker run kooldev/wordpress:${{ matrix.version }} php -v
         docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
+
     - name: Push to Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       env:

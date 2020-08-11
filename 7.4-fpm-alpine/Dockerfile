@@ -1,4 +1,4 @@
-FROM {{ $from }}
+FROM wordpress:php7.4-fpm-alpine
 
 ENV PHP_MEMORY_LIMIT=256M \
     PHP_UPLOAD_MAX_FILESIZE=50M \
