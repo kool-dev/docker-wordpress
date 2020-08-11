@@ -1,0 +1,73 @@
+{
+    "output": ".",
+    "builds": [
+        {
+            "name": "7.4-fpm-alpine",
+            "data": {
+                "from": "wordpress:php7.4-fpm-alpine",
+                "version": "7.4-fpm-alpine"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.3-fpm-alpine",
+            "data": {
+                "from": "wordpress:php7.3-fpm-alpine",
+                "version": "7.3-fpm-alpine"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.2-fpm-alpine",
+            "data": {
+                "from": "wordpress:php7.2-fpm-alpine",
+                "version": "7.2-fpm-alpine"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.1-fpm-alpine",
+            "data": {
+                "from": "wordpress:php7.1-fpm-alpine",
+                "version": "7.1-fpm-alpine"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        }
+    ]
+}
