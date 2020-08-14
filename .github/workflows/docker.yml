@@ -16,10 +16,19 @@ jobs:
     - name: Build image
       run: docker build --pull -t kooldev/wordpress:${{ matrix.version }} ${{ matrix.version }}
 
-    - name: Test docker images
+    - name: Test docker images default command
       run: |
-        docker run kooldev/wordpress:${{ matrix.version }} php -v
-        docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
+        docker run -d --name cicdwp-${{ matrix.version }} kooldev/wordpress:${{ matrix.version }}
+        docker inspect cicdwp-${{ matrix.version }} --format='{{.State.ExitCode}}'
+        if [ $? -eq 0 ]; then
+          docker stop cicdwp-${{ matrix.version }}
+        fi
+  
+    - name: Test docker images PHP executable
+      run: docker run kooldev/wordpress:${{ matrix.version }} php -v
+
+    - name: Test docker images wordpress code
+      run: docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
 
     - name: Push to Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'

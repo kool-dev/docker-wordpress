@@ -14,3 +14,4 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 COPY kool.ini /kool/kool.tmpl
 
 ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "docker-entrypoint.sh" ]
+CMD [ "php-fpm" ]
