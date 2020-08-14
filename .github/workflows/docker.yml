@@ -18,6 +18,7 @@ jobs:
 
     - name: Test docker images
       run: |
+        docker run kooldev/wordpress:${{ matrix.version }}
         docker run kooldev/wordpress:${{ matrix.version }} php -v
         docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
 
