@@ -5,11 +5,18 @@ ENV PHP_MEMORY_LIMIT=256M \
     PHP_POST_MAX_SIZE=50M \
     PHP_MAX_EXECUTION_TIME=30
 
-ARG DOCKERIZE_VERSION=v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+RUN adduser -D -u 1337 kool \
+    # dockerize
+    && curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz | tar xz \
+    && mv dockerize /usr/local/bin/dockerize \
+    # php
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
+    # cleanup
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/* /tmp/*
 
 COPY kool.ini /kool/kool.tmpl
 
