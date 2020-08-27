@@ -2,61 +2,10 @@
     "output": ".",
     "builds": [
         {
-            "name": "7.4-fpm-alpine",
-            "data": {
-                "from": "wordpress:php7.4-fpm-alpine",
-                "version": "7.4-fpm-alpine"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "kool.ini",
-                    "path": "template/kool-ini"
-                }
-            ]
-        },
-        {
-            "name": "7.3-fpm-alpine",
-            "data": {
-                "from": "wordpress:php7.3-fpm-alpine",
-                "version": "7.3-fpm-alpine"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "kool.ini",
-                    "path": "template/kool-ini"
-                }
-            ]
-        },
-        {
-            "name": "7.2-fpm-alpine",
-            "data": {
-                "from": "wordpress:php7.2-fpm-alpine",
-                "version": "7.2-fpm-alpine"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "kool.ini",
-                    "path": "template/kool-ini"
-                }
-            ]
-        },
-        {
-            "name": "7.1-fpm-alpine",
+            "name": "7.1",
             "data": {
                 "from": "wordpress:php7.1-fpm-alpine",
-                "version": "7.1-fpm-alpine"
+                "version": "7.1"
             },
             "files": [
                 {
@@ -66,6 +15,141 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.1-nginx",
+            "data": {
+                "from": "kooldev/wordpress:7.1",
+                "version": "7.1-nginx"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.2",
+            "data": {
+                "from": "wordpress:php7.2-fpm-alpine",
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.2-nginx",
+            "data": {
+                "from": "kooldev/wordpress:7.2",
+                "version": "7.2-nginx"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.3",
+            "data": {
+                "from": "wordpress:php7.3-fpm-alpine",
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.3-nginx",
+            "data": {
+                "from": "kooldev/wordpress:7.3",
+                "version": "7.3-nginx"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.4",
+            "data": {
+                "from": "wordpress:php7.4-fpm-alpine",
+                "version": "7.4"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.4-nginx",
+            "data": {
+                "from": "kooldev/wordpress:7.4",
+                "version": "7.4-nginx"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
                 }
             ]
         }

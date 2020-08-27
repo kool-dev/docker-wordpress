@@ -7,28 +7,26 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ 7.4-fpm-alpine, 7.3-fpm-alpine, 7.2-fpm-alpine, 7.1-fpm-alpine ]
+        version: [ 7.1, 7.2, 7.3, 7.4 ]
 
     steps:
     - name: Checkout code
       uses: actions/checkout@master
 
     - name: Build image
-      run: docker build --pull -t kooldev/wordpress:${{ matrix.version }} ${{ matrix.version }}
-
-    - name: Test docker images default command
       run: |
-        docker run -d --name cicdwp-${{ matrix.version }} kooldev/wordpress:${{ matrix.version }}
-        docker inspect cicdwp-${{ matrix.version }} --format='{{.State.ExitCode}}'
-        if [ $? -eq 0 ]; then
-          docker stop cicdwp-${{ matrix.version }}
-        fi
-  
+        docker build --pull -t kooldev/wordpress:${{ matrix.version }} ${{ matrix.version }}
+        docker build -t kooldev/wordpress:${{ matrix.version }}-nginx ${{ matrix.version }}-nginx
+
     - name: Test docker images PHP executable
-      run: docker run kooldev/wordpress:${{ matrix.version }} php -v
+      run: |
+        docker run kooldev/wordpress:${{ matrix.version }} php -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx php -v
 
     - name: Test docker images wordpress code
-      run: docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
+      run: |
+        docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx php /usr/src/wordpress/index.php
 
     - name: Push to Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -38,3 +36,4 @@ jobs:
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push kooldev/wordpress:${{ matrix.version }}
+        docker push kooldev/wordpress:${{ matrix.version }}-nginx
