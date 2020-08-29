@@ -16,17 +16,29 @@ jobs:
     - name: Build image
       run: |
         docker build --pull -t kooldev/wordpress:${{ matrix.version }} ${{ matrix.version }}
+        docker build --pull -t kooldev/wordpress:${{ matrix.version }}-prod ${{ matrix.version }}-prod
         docker build -t kooldev/wordpress:${{ matrix.version }}-nginx ${{ matrix.version }}-nginx
+        docker build -t kooldev/wordpress:${{ matrix.version }}-nginx-prod ${{ matrix.version }}-nginx-prod
 
     - name: Test docker images PHP executable
       run: |
         docker run kooldev/wordpress:${{ matrix.version }} php -v
+        docker run kooldev/wordpress:${{ matrix.version }}-prod php -v
+
         docker run kooldev/wordpress:${{ matrix.version }}-nginx php -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx supervisord version
+
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod php -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod supervisord version
 
     - name: Test docker images wordpress code
       run: |
         docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-prod php /usr/src/wordpress/index.php
         docker run kooldev/wordpress:${{ matrix.version }}-nginx php /usr/src/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod php /usr/src/wordpress/index.php
 
     - name: Push to Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -36,4 +48,6 @@ jobs:
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push kooldev/wordpress:${{ matrix.version }}
+        docker push kooldev/wordpress:${{ matrix.version }}-prod
         docker push kooldev/wordpress:${{ matrix.version }}-nginx
+        docker push kooldev/wordpress:${{ matrix.version }}-nginx-prod

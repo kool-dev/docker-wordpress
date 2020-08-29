@@ -1,5 +1,5 @@
-FROM wordpress:php7.1-fpm-alpine as wordpress
-FROM kooldev/php:7.1
+FROM wordpress:php7.4-fpm-alpine as wordpress
+FROM kooldev/php:7.4-prod
 
 
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress

@@ -1,6 +1,7 @@
-FROM wordpress:php7.1-fpm-alpine as wordpress
-FROM kooldev/php:7.1
+FROM wordpress:php7.3-fpm-alpine as wordpress
+FROM kooldev/php:7.3-nginx-prod
 
+ENV NGINX_ROOT=/app
 
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress
 COPY --from=wordpress --chown=kool:kool /var/www/html/wp-content /app/wp-content
