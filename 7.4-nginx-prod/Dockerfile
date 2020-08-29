@@ -1,9 +1,7 @@
-FROM wordpress:php{{ $version }}-fpm-alpine as wordpress
-FROM {{ $from }}
+FROM wordpress:php7.4-fpm-alpine as wordpress
+FROM kooldev/php:7.4-nginx-prod
 
-@if ($nginx)
 ENV NGINX_ROOT=/app
-@endif
 
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress
 COPY --from=wordpress --chown=kool:kool /var/www/html/wp-content /app/wp-content
