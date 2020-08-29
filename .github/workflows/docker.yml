@@ -35,10 +35,10 @@ jobs:
 
     - name: Test docker images wordpress code
       run: |
-        docker run kooldev/wordpress:${{ matrix.version }} php /usr/src/wordpress/index.php
-        docker run kooldev/wordpress:${{ matrix.version }}-prod php /usr/src/wordpress/index.php
-        docker run kooldev/wordpress:${{ matrix.version }}-nginx php /usr/src/wordpress/index.php
-        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod php /usr/src/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }} php /kool/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-prod php /kool/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx php /kool/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx-prod php /kool/wordpress/index.php
 
     - name: Push to Hub
       if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
