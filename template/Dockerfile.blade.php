@@ -1,3 +1,4 @@
+FROM wordpress:cli-php{{ $version }} as wordpress-cli
 FROM wordpress:php{{ $version }}-fpm-alpine as wordpress
 FROM {{ $from }}
 
@@ -13,6 +14,7 @@ RUN echo "Building Deps" \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/*
 
+COPY --from=wordpress-cli /usr/local/bin/wp /usr/local/bin/wp
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress
 COPY --from=wordpress --chown=kool:kool /var/www/html/wp-content /app/wp-content
 COPY entrypoint /kool/entrypoint
