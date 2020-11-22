@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+dockerize -template /kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini -template /kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf -template /kool/default.tmpl:/etc/nginx/conf.d/default.conf
+
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
