@@ -1,0 +1,54 @@
+name: CI/CD
+
+on: [push, workflow_dispatch]
+
+env:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ 7.1, 7.2, 7.3, 7.4 ]
+        type: [ '', '-prod' ]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@master
+
+    - name: Build image
+      run: |
+        docker build
+          --tag kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} \
+          ${{ matrix.version }}${{ matrix.type }}
+
+        docker build \
+          --tag kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} \
+          ${{ matrix.version }}-nginx${{ matrix.type }}
+
+    - name: Test docker images PHP executable
+      run: |
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} php -v
+
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx php -v
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx supervisord version
+
+    - name: Test docker images wordpress code
+      run: |
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} php /kool/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx php /kool/wordpress/index.php
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push to Hub
+      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+      run: |
+        docker push kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}
+        docker push kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
