@@ -32,16 +32,16 @@ jobs:
         docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} php -v
         docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} wp --allow-root --version
 
-        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx php -v
-        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx wp --allow-root --version
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} wp --allow-root --version
 
-        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx nginx -v
-        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx supervisord version
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
     - name: Test docker images wordpress code
       run: |
         docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} php /kool/wordpress/index.php
-        docker run kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}-nginx php /kool/wordpress/index.php
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php /kool/wordpress/index.php
 
     - name: Login to DockerHub
       uses: docker/login-action@v1
