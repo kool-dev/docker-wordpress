@@ -233,7 +233,7 @@ EOPHP
 		fi
 
 		if ! TERM=dumb php -- <<'EOPHP'
-<?php
+{!! '<?php' !!}
 // database might not exist, so let's try creating it (just to be safe)
 
 $stderr = fopen('php://stderr', 'w');
