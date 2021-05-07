@@ -1,0 +1,10 @@
+scripts:
+  template: kool docker fireworkweb/fwd:v1.0 fwd template
+  build:
+    # parse templates
+    - kool run template
+    # PHP 7.4
+    - docker build --pull -t kooldev/wordpress:7.4 7.4
+    - docker build -t kooldev/wordpress:7.4-prod 7.4-prod
+    - docker build -t kooldev/wordpress:7.4-nginx 7.4-nginx
+    - docker build -t kooldev/wordpress:7.4-nginx-prod 7.4-nginx-prod
