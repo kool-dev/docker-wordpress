@@ -1,6 +1,6 @@
-FROM wordpress:cli-php7.3 as wordpress-cli
-FROM wordpress:php7.3-fpm-alpine as wordpress
-FROM kooldev/php:7.3-nginx
+FROM wordpress:cli-php8.0 as wordpress-cli
+FROM wordpress:php8.0-fpm-alpine as wordpress
+FROM kooldev/php:8.0-nginx
 
 ENV NGINX_ROOT=/app
 
@@ -15,6 +15,9 @@ RUN echo "Building Deps" \
 COPY --from=wordpress-cli /usr/local/bin/wp /usr/local/bin/wp
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress
 COPY --from=wordpress --chown=kool:kool /var/www/html/wp-content /app/wp-content
-COPY entrypoint /kool/entrypoint
+COPY entrypoint /kool/wordpress-entrypoint
 
-RUN chmod -R 777 wp-content && chmod +x /kool/entrypoint
+RUN chmod -R 777 wp-content && chmod +x /kool/wordpress-entrypoint
+
+ENTRYPOINT [ "/kool/wordpress-entrypoint" ]
+CMD [ "supervisord", "-c", "/kool/supervisor.conf" ]

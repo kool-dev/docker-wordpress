@@ -2,158 +2,6 @@
     "output": ".",
     "builds": [
         {
-            "name": "7.2",
-            "data": {
-                "from": "kooldev/php:7.2",
-                "nginx": false,
-                "prod": false,
-                "version": "7.2"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.2-prod",
-            "data": {
-                "from": "kooldev/php:7.2-prod",
-                "nginx": false,
-                "prod": true,
-                "version": "7.2"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.2-nginx",
-            "data": {
-                "from": "kooldev/php:7.2-nginx",
-                "nginx": true,
-                "prod": false,
-                "version": "7.2"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.2-nginx-prod",
-            "data": {
-                "from": "kooldev/php:7.2-nginx-prod",
-                "nginx": true,
-                "prod": true,
-                "version": "7.2"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.3",
-            "data": {
-                "from": "kooldev/php:7.3",
-                "nginx": false,
-                "prod": false,
-                "version": "7.3"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.3-prod",
-            "data": {
-                "from": "kooldev/php:7.3-prod",
-                "nginx": false,
-                "prod": true,
-                "version": "7.3"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.3-nginx",
-            "data": {
-                "from": "kooldev/php:7.3-nginx",
-                "nginx": true,
-                "prod": false,
-                "version": "7.3"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.3-nginx-prod",
-            "data": {
-                "from": "kooldev/php:7.3-nginx-prod",
-                "nginx": true,
-                "prod": true,
-                "version": "7.3"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
             "name": "7.4",
             "data": {
                 "from": "kooldev/php:7.4",
@@ -217,6 +65,82 @@
                 "nginx": true,
                 "prod": true,
                 "version": "7.4"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.0",
+            "data": {
+                "from": "kooldev/php:8.0",
+                "nginx": false,
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.0-prod",
+            "data": {
+                "from": "kooldev/php:8.0-prod",
+                "nginx": false,
+                "prod": true,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx",
+            "data": {
+                "from": "kooldev/php:8.0-nginx",
+                "nginx": true,
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.0-nginx-prod",
+                "nginx": true,
+                "prod": true,
+                "version": "8.0"
             },
             "files": [
                 {
