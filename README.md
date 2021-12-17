@@ -6,6 +6,13 @@ Minimal PHP Docker image for wordpress based on [kooldev/php](https://github.com
 
 ## Available Tags
 
+### 8.1
+
+- [8.1](https://github.com/kool-dev/docker-wordpress/blob/master/8.1/Dockerfile)
+- [8.1-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-prod/Dockerfile)
+- [8.1-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-nginx/Dockerfile)
+- [8.1-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-nginx-prod/Dockerfile)
+
 ### 8.0
 
 - [8.0](https://github.com/kool-dev/docker-wordpress/blob/master/8.0/Dockerfile)
