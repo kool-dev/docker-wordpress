@@ -1,6 +1,8 @@
 name: CI/CD
 
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
 
 env:
   DOCKER_BUILDKIT: 1
@@ -10,22 +12,32 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '7.4', '8.0', '8.1' ]
+        version: [ '7.4', '8.0', '8.1', '8.2' ]
         type: [ '', '-prod' ]
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
 
-    - name: Build image
-      run: |
-        docker build \
-          --tag kooldev/wordpress:${{ matrix.version }}${{ matrix.type }} \
-          ${{ matrix.version }}${{ matrix.type }}
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v2
 
-        docker build \
-          --tag kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} \
-          ${{ matrix.version }}-nginx${{ matrix.type }}
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and export to Docker
+      uses: docker/build-push-action@v3
+      with:
+        context: ${{ matrix.version }}${{ matrix.type }}
+        load: true
+        tags: kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}
+
+    - name: Build and export to Docker (nginx)
+      uses: docker/build-push-action@v3
+      with:
+        context: ${{ matrix.version }}-nginx${{ matrix.type }}
+        load: true
+        tags: kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
 
     - name: Test docker images PHP executable
       run: |
@@ -44,7 +56,7 @@ jobs:
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php /kool/wordpress/index.php
 
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -55,3 +67,21 @@ jobs:
       run: |
         docker push kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}
         docker push kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+      with:
+        context: ${{ matrix.version }}${{ matrix.type }}
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: kooldev/wordpress:${{ matrix.version }}${{ matrix.type }}
+
+    - name: Build and push (nginx)
+      uses: docker/build-push-action@v3
+      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+      with:
+        context: ${{ matrix.version }}-nginx${{ matrix.type }}
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
