@@ -228,6 +228,82 @@
                     "path": "template/entrypoint"
                 }
             ]
+        },
+        {
+            "name": "8.2",
+            "data": {
+                "from": "kooldev/php:8.2",
+                "nginx": false,
+                "prod": false,
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.2-prod",
+            "data": {
+                "from": "kooldev/php:8.2-prod",
+                "nginx": false,
+                "prod": true,
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.2-nginx",
+            "data": {
+                "from": "kooldev/php:8.2-nginx",
+                "nginx": true,
+                "prod": false,
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "8.2-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.2-nginx-prod",
+                "nginx": true,
+                "prod": true,
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
         }
     ]
 }
