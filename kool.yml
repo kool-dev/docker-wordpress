@@ -18,3 +18,13 @@ scripts:
     - docker build -t kooldev/wordpress:8.1-prod 8.1-prod
     - docker build -t kooldev/wordpress:8.1-nginx 8.1-nginx
     - docker build -t kooldev/wordpress:8.1-nginx-prod 8.1-nginx-prod
+    # PHP 8.2
+    - docker build --pull -t kooldev/wordpress:8.2 8.2
+    - docker build -t kooldev/wordpress:8.2-prod 8.2-prod
+    - docker build -t kooldev/wordpress:8.2-nginx 8.2-nginx
+    - docker build -t kooldev/wordpress:8.2-nginx-prod 8.2-nginx-prod
+    # PHP 8.3
+    - docker build --pull -t kooldev/wordpress:8.3 8.3
+    - docker build -t kooldev/wordpress:8.3-prod 8.3-prod
+    - docker build -t kooldev/wordpress:8.3-nginx 8.3-nginx
+    - docker build -t kooldev/wordpress:8.3-nginx-prod 8.3-nginx-prod
