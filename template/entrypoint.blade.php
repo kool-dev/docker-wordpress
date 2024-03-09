@@ -1,10 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
-@if ($nginx)
 # Nginx server config
 dockerize -template /kool/default.tmpl:/etc/nginx/conf.d/default.conf
-@endif
 
 # Run as current user
 CURRENT_USER=${ASUSER:-${UID:-0}}
