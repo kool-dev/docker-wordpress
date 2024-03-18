@@ -2,9 +2,7 @@ FROM wordpress:cli-php{{ $version }} as wordpress-cli
 FROM wordpress:php{{ $version }}-fpm-alpine as wordpress
 FROM {{ $from }}
 
-@if ($nginx)
 ENV NGINX_ROOT=/app
-@endif
 
 COPY --from=wordpress-cli /usr/local/bin/wp /usr/local/bin/wp
 COPY --from=wordpress --chown=kool:kool /usr/src/wordpress /kool/wordpress

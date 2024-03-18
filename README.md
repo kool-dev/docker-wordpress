@@ -8,38 +8,27 @@ Minimal PHP Docker image for wordpress based on [kooldev/php](https://github.com
 
 ### 8.3
 
-- [8.3](https://github.com/kool-dev/docker-wordpress/blob/master/8.3/Dockerfile)
-- [8.3-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.3-prod/Dockerfile)
 - [8.3-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/8.3-nginx/Dockerfile)
 - [8.3-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.3-nginx-prod/Dockerfile)
 
 ### 8.2
 
-- [8.2](https://github.com/kool-dev/docker-wordpress/blob/master/8.2/Dockerfile)
-- [8.2-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.2-prod/Dockerfile)
 - [8.2-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/8.2-nginx/Dockerfile)
 - [8.2-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.2-nginx-prod/Dockerfile)
 
 ### 8.1
 
-- [8.1](https://github.com/kool-dev/docker-wordpress/blob/master/8.1/Dockerfile)
-- [8.1-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-prod/Dockerfile)
 - [8.1-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-nginx/Dockerfile)
 - [8.1-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-nginx-prod/Dockerfile)
 
 ### 8.0
 
-- [8.0](https://github.com/kool-dev/docker-wordpress/blob/master/8.0/Dockerfile)
-- [8.0-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.0-prod/Dockerfile)
 - [8.0-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/8.0-nginx/Dockerfile)
 - [8.0-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.0-nginx-prod/Dockerfile)
 
-### 7.4
+### Legacy Images
 
-- [7.4](https://github.com/kool-dev/docker-wordpress/blob/master/7.4/Dockerfile)
-- [7.4-prod](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-prod/Dockerfile)
-- [7.4-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-nginx/Dockerfile)
-- [7.4-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-nginx-prod/Dockerfile)
+Previously supported but now deprecated tags: [8.3](https://github.com/kool-dev/docker-wordpress/blob/master/8.3/Dockerfile), [8.3-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.3-prod/Dockerfile), [8.2](https://github.com/kool-dev/docker-wordpress/blob/master/8.2/Dockerfile), [8.2-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.2-prod/Dockerfile), [8.1](https://github.com/kool-dev/docker-wordpress/blob/master/8.1/Dockerfile), [8.1-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.1-prod/Dockerfile), [8.0](https://github.com/kool-dev/docker-wordpress/blob/master/8.0/Dockerfile), [8.0-prod](https://github.com/kool-dev/docker-wordpress/blob/master/8.0-prod/Dockerfile), [7.4](https://github.com/kool-dev/docker-wordpress/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-wordpress/blob/master/7.4-nginx-prod/Dockerfile).
 
 ## How to
 
