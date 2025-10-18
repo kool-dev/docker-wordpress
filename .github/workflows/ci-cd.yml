@@ -37,6 +37,7 @@ jobs:
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php -v
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} wp --allow-root --version
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -t
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
     - name: Test docker images wordpress code
