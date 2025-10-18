@@ -1,6 +1,6 @@
-FROM wordpress:cli-php{{ $version }} AS wordpress-cli
-FROM wordpress:php{{ $version }}-fpm-alpine AS wordpress
-FROM {{ $from }}
+FROM wordpress:cli-php8.4 AS wordpress-cli
+FROM wordpress:php8.4-fpm-alpine AS wordpress
+FROM kooldev/php:8.4-nginx
 
 ENV NGINX_ROOT=/app
 

@@ -18,3 +18,6 @@ scripts:
     # PHP 8.3
     - docker build -t kooldev/wordpress:8.3-nginx 8.3-nginx
     - docker build -t kooldev/wordpress:8.3-nginx-prod 8.3-nginx-prod
+    # PHP 8.4
+    - docker build -t kooldev/wordpress:8.4-nginx 8.4-nginx
+    - docker build -t kooldev/wordpress:8.4-nginx-prod 8.4-nginx-prod
