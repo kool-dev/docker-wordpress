@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '8.0', '8.1', '8.2', '8.3' ]
+        version: [ '8.1', '8.2', '8.3', '8.4' ]
         type: [ '', '-prod' ]
 
     steps:
@@ -37,6 +37,7 @@ jobs:
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php -v
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} wp --allow-root --version
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
+        docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -t
         docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
     - name: Test docker images wordpress code

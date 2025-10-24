@@ -1,8 +1,9 @@
 #!/bin/bash
 set -eo pipefail
 
-# Nginx server config
-dockerize -template /kool/default.tmpl:/etc/nginx/conf.d/default.conf
+# Add WebP support for WordPress by injecting include directive
+# Insert the include directive before the location / block
+sed -i 's/\(    location \/ {\)/    # Include WordPress WebP support\n    include \/etc\/nginx\/wordpress-webp.conf;\n\n\1/' /kool/default.tmpl
 
 # Run as current user
 CURRENT_USER=${ASUSER:-${UID:-0}}

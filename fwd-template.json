@@ -2,78 +2,6 @@
     "output": ".",
     "builds": [
         {
-            "name": "7.4-nginx",
-            "data": {
-                "from": "kooldev/php:7.4-nginx",
-                "prod": false,
-                "version": "7.4"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "7.4-nginx-prod",
-            "data": {
-                "from": "kooldev/php:7.4-nginx-prod",
-                "prod": true,
-                "version": "7.4"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "8.0-nginx",
-            "data": {
-                "from": "kooldev/php:8.0-nginx",
-                "prod": false,
-                "version": "8.0"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
-            "name": "8.0-nginx-prod",
-            "data": {
-                "from": "kooldev/php:8.0-nginx-prod",
-                "prod": true,
-                "version": "8.0"
-            },
-            "files": [
-                {
-                    "name": "Dockerfile",
-                    "path": "template/Dockerfile"
-                },
-                {
-                    "name": "entrypoint",
-                    "path": "template/entrypoint"
-                }
-            ]
-        },
-        {
             "name": "8.1-nginx",
             "data": {
                 "from": "kooldev/php:8.1-nginx",
@@ -88,6 +16,10 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         },
@@ -106,6 +38,10 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         },
@@ -124,6 +60,10 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         },
@@ -142,6 +82,10 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         },
@@ -160,6 +104,10 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         },
@@ -178,6 +126,54 @@
                 {
                     "name": "entrypoint",
                     "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.4-nginx",
+            "data": {
+                "from": "kooldev/php:8.4-nginx",
+                "prod": false,
+                "version": "8.4"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.4-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.4-nginx-prod",
+                "prod": true,
+                "version": "8.4"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "wordpress-webp.conf",
+                    "path": "template/wordpress-webp-conf"
                 }
             ]
         }
