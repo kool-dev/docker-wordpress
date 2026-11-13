@@ -36,8 +36,10 @@ Check [kooldev/php](https://github.com/kool-dev/docker-php) to see available opt
 
 ### Parent image updates
 
-CI rebuilds on `docker-php-updated` repository dispatches, with a weekly Monday
-fallback and manual runs available. Test and publish builds explicitly pull all
+CI rebuilds on `docker-php-updated` repository dispatches after PHP parent
+publication, relying on the PHP parent's scheduled rebuild rather than a separate
+WordPress schedule. Push, pull request, and manual runs remain available.
+Test and publish builds explicitly pull all
 parent stages. Dispatch delivery does not guarantee a successful downstream build;
 check the CI/CD run before treating published tags as refreshed.
 
