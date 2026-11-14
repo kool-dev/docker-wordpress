@@ -34,6 +34,19 @@ Previously supported but now deprecated tags: [8.3](https://github.com/kool-dev/
 
 Check [kooldev/php](https://github.com/kool-dev/docker-php) to see available options.
 
+### Parent image updates
+
+CI rebuilds on `docker-php-updated` repository dispatches after PHP parent
+publication, relying on the PHP parent's scheduled rebuild rather than a separate
+WordPress schedule. Push, pull request, and manual runs remain available.
+Test and publish builds explicitly pull all
+parent stages. Dispatch delivery does not guarantee a successful downstream build;
+check the CI/CD run before treating published tags as refreshed.
+
+The existing PHP 8.1 tags are retained, but PHP 8.1 is end-of-life and its Kool
+parent is no longer rebuilt by docker-php. Rebuilding WordPress cannot patch an
+unmaintained parent; use a maintained PHP tag.
+
 ### Update images with templates
 
 You should change `fwd-template.json` for configuration and `template` folder for the actual base templates.
