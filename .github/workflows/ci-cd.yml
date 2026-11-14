@@ -27,25 +27,41 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/app" fireworkweb/fwd:v1.0 fwd template
           git diff --exit-code
+      - name: Test publication contracts
+        run: python3 -m unittest discover -s .github/tests -v
 
   build:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runner }}
     strategy:
       fail-fast: false
       matrix:
         version: ["8.1", "8.2", "8.3", "8.4"]
         type: ["", "-prod"]
+        platform:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+
+    env:
+      VARIANT: ${{ matrix.version }}-nginx${{ matrix.type }}
+      ARCH: ${{ matrix.platform.arch }}
+      IMAGE: kooldev/wordpress:ci-wordpress-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.version }}-nginx${{ matrix.type }}-${{ matrix.platform.arch }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v4
-
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v4
+
+      - name: Verify native runner
+        run: |
+          case "$ARCH:$(uname -m)" in
+            amd64:x86_64|arm64:aarch64) ;;
+            *) echo "Runner architecture mismatch" >&2; exit 1 ;;
+          esac
 
       - name: Build and export to Docker (nginx)
         uses: docker/build-push-action@v7
@@ -53,19 +69,25 @@ jobs:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
           pull: true
-          tags: kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
+          platforms: linux/${{ matrix.platform.arch }}
+          tags: ${{ env.IMAGE }}
+
+      - name: Verify loaded image architecture
+        run: |
+          test "$(docker image inspect "$IMAGE" --format '{{.Os}}/{{.Architecture}}')" = "linux/$ARCH"
+          docker run --rm "$IMAGE" uname -m | grep -Ex "$(uname -m)"
 
       - name: Test docker images PHP executable
         run: |
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php -v
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} wp --allow-root --version
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} nginx -T
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} supervisord --version
+          docker run --rm "$IMAGE" php -v
+          docker run --rm "$IMAGE" wp --allow-root --version
+          docker run --rm "$IMAGE" nginx -v
+          docker run --rm "$IMAGE" nginx -T
+          docker run --rm "$IMAGE" supervisord --version
 
       - name: Test docker images wordpress code
         run: |
-          docker run kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }} php /kool/wordpress/index.php
+          docker run --rm "$IMAGE" php /kool/wordpress/index.php
 
       - name: Login to DockerHub
         uses: docker/login-action@v4
@@ -74,12 +96,34 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push (nginx)
-        uses: docker/build-push-action@v7
+      - name: Push exact tested image and record digest
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+        run: python3 .github/scripts/publish.py stage
+
+      - name: Upload immutable image metadata
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+        uses: actions/upload-artifact@v7.0.2
         with:
-          context: ${{ matrix.version }}-nginx${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          pull: true
-          tags: kooldev/wordpress:${{ matrix.version }}-nginx${{ matrix.type }}
+          name: wordpress-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.VARIANT }}-${{ env.ARCH }}
+          path: metadata/*.json
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-wordpress'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: wordpress-${{ github.run_id }}-${{ github.run_attempt }}-*
+          path: metadata
+      - name: Preflight complete metadata set
+        run: python3 .github/scripts/publish.py preflight
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish manifests from tested digests only
+        run: python3 .github/scripts/publish.py publish
