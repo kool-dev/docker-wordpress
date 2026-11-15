@@ -47,16 +47,31 @@ check the CI/CD run before treating published tags as refreshed.
 Only non-PR runs on this repository's `master` can log in or publish. After all
 checks in each native job pass, it pushes the tested image to a staging tag:
 `ci-wordpress-<run_id>-<run_attempt>-<variant>-<arch>`. Run/attempt-scoped artifacts
-record the staging tag, architecture, and immutable repository digest. PRs, forks,
+record the staging tag, locally verified Linux architecture/image ID, and immutable repository digest. PRs, forks,
 and manual feature-branch runs only build and test.
 
 After all 16 native jobs succeed, publication validates all eight AMD64/ARM64
-pairs and their remote image architectures before changing any stable tag.
+pairs and their tested local platform/image-ID records before changing any stable tag.
 Stable manifests reference those exact tested digests; publication never rebuilds.
-If a run partially fails, **rerun the entire workflow**, not just failed jobs:
-artifacts from earlier attempts are intentionally excluded. Registry updates to
-eight tags are not atomic; if promotion fails midway, rerun the entire workflow
-to refresh the complete set. Staging tags are not public compatibility tags.
+Publication trusts the complete staging artifacts rather than performing 32
+redundant remote inspections. Manifest assembly still reads Docker Hub, so its
+pull quota can still apply. The publisher uses the Docker driver, avoiding an
+extra BuildKit container image pull.
+
+If all native build/test/staging jobs succeeded, use **Resume publication** on
+`master` with the CI/CD `source_run` ID and completed `source_attempt`. Recovery
+downloads only that attempt's complete artifacts and republishes all eight
+manifests without builds or staging pushes. It requires the latest trusted CI/CD
+run and latest completed attempt at the current default-branch commit, and uses
+the same release lock. Failed native jobs, expired artifacts, stale commits or
+old metadata without platform/image-ID fields require a fresh full CI/CD run.
+
+Normal CI/CD reruns still require **Re-run all jobs**, not only failed jobs:
+metadata from earlier attempts is intentionally excluded. Never mix attempts.
+Registry updates to eight tags are not atomic. Staging tags are not public
+compatibility tags and no staging-tag cleanup is implemented. Push/parent dispatch
+triggers are retained; avoid an independent receiver release immediately before
+a parent release where possible to avoid duplicate rebuilds.
 
 Publication contract tests run with `python3 -m unittest discover -s .github/tests -v`.
 For an opt-in real registry test, run `python3 .github/tests/local_registry.py`

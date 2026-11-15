@@ -38,11 +38,15 @@ def plan(records, run, attempt, repository=REPOSITORY):
     found = {}
     digests = set()
     for record in records:
-        if set(record) != {"run", "attempt", "variant", "arch", "staging", "digest"}:
+        if set(record) != {"run", "attempt", "variant", "arch", "staging", "digest",
+                           "os", "image_id"}:
             raise ValueError("Unexpected metadata fields")
         variant, arch = record["variant"], record["arch"]
         if variant not in VARIANTS or arch not in ARCHES:
             raise ValueError("Unknown variant/architecture")
+        if (record["os"] != "linux" or not isinstance(record["image_id"], str)
+                or not DIGEST.fullmatch(record["image_id"])):
+            raise ValueError("Invalid tested image ID/platform")
         if record["run"] != run or record["attempt"] != attempt:
             raise ValueError("Metadata belongs to a different run/attempt")
         expected = f"{repository}:{staging_tag(run, attempt, variant, arch)}"
@@ -64,20 +68,8 @@ def plan(records, run, attempt, repository=REPOSITORY):
 
 
 def promote(releases):
-    # Read every immutable manifest/config before changing even the first tag.
-    # Reject indexes: staging must point to one native image, not another index.
-    for _, images in releases:
-        for arch, digest in images:
-            manifest = json.loads(docker("buildx", "imagetools", "inspect", "--raw", digest))
-            if manifest.get("mediaType") not in {
-                "application/vnd.oci.image.manifest.v1+json",
-                "application/vnd.docker.distribution.manifest.v2+json",
-            }:
-                raise ValueError("Staged digest is not a single image manifest")
-            config = json.loads(docker("buildx", "imagetools", "inspect", digest,
-                                       "--format", "{{json .Image}}"))
-            if config.get("os") != "linux" or config.get("architecture") != arch:
-                raise ValueError("Staged image architecture mismatch")
+    # The complete artifact set binds each push digest to a locally validated
+    # tested ID/platform. Do not re-read all manifests/configs from Docker Hub.
     for tag, images in releases:
         docker("buildx", "imagetools", "create", "--tag", tag,
                *(digest for _, digest in images))
@@ -91,7 +83,8 @@ def stage(env):
     if variant not in VARIANTS or arch not in ARCHES or image != expected:
         raise ValueError("Unexpected local image")
     info = json.loads(docker("image", "inspect", image))[0]
-    if (info["Os"], info["Architecture"]) != ("linux", arch):
+    if ((info["Os"], info["Architecture"]) != ("linux", arch)
+            or not DIGEST.fullmatch(info["Id"])):
         raise ValueError("Local image architecture mismatch")
     output = docker("push", image)
     matches = re.findall(r"digest: (sha256:[0-9a-f]{64})\b", output)
@@ -100,7 +93,8 @@ def stage(env):
     if json.loads(docker("image", "inspect", image))[0]["Id"] != info["Id"]:
         raise ValueError("Local image changed during push")
     record = dict(run=run, attempt=attempt, variant=variant, arch=arch,
-                  staging=image, digest=f"{REPOSITORY}@{matches[0]}")
+                  staging=image, digest=f"{REPOSITORY}@{matches[0]}",
+                  os=info["Os"], image_id=info["Id"])
     Path("metadata").mkdir(exist_ok=True)
     Path(f"metadata/{variant}-{arch}.json").write_text(json.dumps(record) + "\n")
 

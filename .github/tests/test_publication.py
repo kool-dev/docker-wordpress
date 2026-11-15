@@ -14,7 +14,8 @@ spec.loader.exec_module(publish)
 
 def records():
     return [
-        dict(run="123", attempt="2", variant=v, arch=a,
+        dict(run="123", attempt="2", variant=v, arch=a, os="linux",
+             image_id=f"sha256:{n + 100:064x}",
              staging=f"{publish.REPOSITORY}:{publish.staging_tag('123', '2', v, a)}",
              digest=f"{publish.REPOSITORY}@sha256:{n:064x}")
         for n, (v, a) in enumerate(
@@ -36,6 +37,7 @@ class PublicationTests(unittest.TestCase):
             ("digest", "foreign/wordpress@sha256:" + "a" * 64),
             ("digest", publish.REPOSITORY + "@sha256:xyz"),
             ("digest", records()[1]["digest"]), ("digest", None),
+            ("os", "windows"), ("image_id", "bad"),
         ]:
             changed = copy.deepcopy(records())
             changed[0][key] = value
@@ -66,29 +68,13 @@ class PublicationTests(unittest.TestCase):
                     publish.main()
                 docker.assert_not_called()
 
-    def test_remote_preflight_before_any_write(self):
-        releases = publish.plan(records(), "123", "2")
-        for bad in ("architecture", "index", "unavailable"):
-            calls = []
-
-            def docker(*args):
-                calls.append(args)
-                # Fail only on the final arm64 digest: no earlier stable writes allowed.
-                last = releases[-1][1][-1][1] in args
-                if bad == "unavailable" and last:
-                    raise RuntimeError("registry unavailable")
-                if "--raw" in args:
-                    return json.dumps({"mediaType": "application/vnd.oci.image.index.v1+json"
-                                       if bad == "index" and last else
-                                       "application/vnd.oci.image.manifest.v1+json"})
-                arch = next(a for _, images in releases for a, d in images if d in args)
-                return json.dumps({"os": "linux", "architecture":
-                                   "wrong" if bad == "architecture" and last else arch})
-
-            with self.subTest(bad=bad), patch.object(publish, "docker", side_effect=docker):
-                with self.assertRaises((ValueError, RuntimeError)):
-                    publish.promote(releases)
-                self.assertFalse(any("create" in c for c in calls))
+    def test_last_invalid_platform_rejected_before_any_write(self):
+        batch = records()
+        batch[-1]["os"] = "windows"
+        with patch.object(publish, "docker") as docker:
+            with self.assertRaises(ValueError):
+                publish.promote(publish.plan(batch, "123", "2"))
+            docker.assert_not_called()
 
     def test_exact_digest_promotion(self):
         releases = publish.plan(records(), "123", "2")
@@ -104,9 +90,8 @@ class PublicationTests(unittest.TestCase):
         with patch.object(publish, "docker", side_effect=docker) as mock:
             publish.promote(releases)
         calls = [c.args for c in mock.call_args_list]
-        self.assertEqual(len(calls), 40)
-        self.assertTrue(all("inspect" in c for c in calls[:32]))
-        self.assertEqual(calls[32:], [
+        self.assertEqual(len(calls), 8)
+        self.assertEqual(calls, [
             ("buildx", "imagetools", "create", "--tag", tag, *(d for _, d in images))
             for tag, images in releases])
 
@@ -114,7 +99,7 @@ class PublicationTests(unittest.TestCase):
         env = dict(GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2",
                    VARIANT="8.4-nginx", ARCH="arm64",
                    IMAGE="kooldev/wordpress:ci-wordpress-123-2-8.4-nginx-arm64")
-        info = json.dumps([{"Os": "linux", "Architecture": "arm64", "Id": "tested-id"}])
+        info = json.dumps([{"Os": "linux", "Architecture": "arm64", "Id": "sha256:" + "b" * 64}])
         with patch.object(publish, "docker", side_effect=[
             info, "tag: digest: sha256:" + "a" * 64 + " size: 123", info
         ]) as docker, patch.object(publish.Path, "mkdir"), patch.object(publish.Path, "write_text") as write:
@@ -122,7 +107,27 @@ class PublicationTests(unittest.TestCase):
             self.assertEqual(docker.call_args_list[1].args, ("push", env["IMAGE"]))
             record = json.loads(write.call_args.args[0])
             self.assertEqual(record["digest"], publish.REPOSITORY + "@sha256:" + "a" * 64)
+            self.assertEqual(record["image_id"], "sha256:" + "b" * 64)
+            self.assertEqual(record["os"], "linux")
             self.assertFalse(any("build" in c.args for c in docker.call_args_list))
+
+    def test_stage_rejects_wrong_local_platform_id_or_ambiguous_digest(self):
+        env = dict(GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2",
+                   VARIANT="8.4-nginx", ARCH="arm64",
+                   IMAGE="kooldev/wordpress:ci-wordpress-123-2-8.4-nginx-arm64")
+        image = dict(Os="linux", Architecture="arm64", Id="sha256:" + "b" * 64)
+        for info in (dict(image, Os="windows"), dict(image, Architecture="amd64"),
+                     dict(image, Id="bad")):
+            with patch.object(publish, "docker", return_value=json.dumps([info])) as docker:
+                with self.assertRaises(ValueError):
+                    publish.stage(env)
+                self.assertEqual(docker.call_count, 1)
+        for output in ("no digest", "digest: sha256:" + "c" * 64 + "\ndigest: sha256:" + "d" * 64):
+            with patch.object(publish, "docker", side_effect=[json.dumps([image]), output]), \
+                    patch.object(publish.Path, "write_text") as write:
+                with self.assertRaises(ValueError):
+                    publish.stage(env)
+                write.assert_not_called()
 
 
 if __name__ == "__main__":

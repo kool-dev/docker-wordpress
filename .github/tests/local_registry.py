@@ -12,6 +12,7 @@ import subprocess
 import sys
 import time
 from urllib.request import Request, urlopen
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from test_publication import publish  # noqa: E402
@@ -70,9 +71,29 @@ def main():
                 request(api + "/manifests/" + tag, "PUT", manifest,
                         "application/vnd.oci.image.manifest.v1+json")
                 records.append(dict(run="123", attempt="2", variant=variant, arch=arch,
+                                    os="linux", image_id=digest(config),
                                     staging=repo + ":" + tag,
                                     digest=repo + "@" + digest(manifest)))
         releases = publish.plan(records, "123", "2", repository=repo)
+        real_docker = publish.docker
+        writes = []
+
+        def interrupted(*args):
+            if args[:3] == ("buildx", "imagetools", "create"):
+                if writes:
+                    raise RuntimeError("simulated registry outage")
+                writes.append(args)
+            return real_docker(*args)
+
+        with patch.object(publish, "docker", side_effect=interrupted):
+            try:
+                publish.promote(releases)
+            except RuntimeError as error:
+                assert str(error) == "simulated registry outage"
+            else:
+                raise AssertionError("Expected interrupted publication")
+        assert len(writes) == 1
+        # Recovery republishes the complete set from the same metadata, no builds.
         publish.promote(releases)
         for tag, images in releases:
             index = json.loads(publish.docker("buildx", "imagetools", "inspect", "--raw", tag))

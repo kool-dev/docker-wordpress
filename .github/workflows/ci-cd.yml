@@ -69,6 +69,7 @@ jobs:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
           pull: true
+          provenance: false
           platforms: linux/${{ matrix.platform.arch }}
           tags: ${{ env.IMAGE }}
 
@@ -115,6 +116,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v4
+        with:
+          driver: docker
       - uses: actions/download-artifact@v8.0.2
         with:
           pattern: wordpress-${{ github.run_id }}-${{ github.run_attempt }}-*
