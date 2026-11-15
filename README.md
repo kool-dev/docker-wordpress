@@ -46,7 +46,7 @@ check the CI/CD run before treating published tags as refreshed.
 
 Only non-PR runs on this repository's `master` can log in or publish. After all
 checks in each native job pass, it pushes the tested image to a staging tag:
-`ci-wordpress-<run_id>-<run_attempt>-<variant>-<arch>`. Run/attempt-scoped artifacts
+`ci-docker-wordpress-<run_id>-<run_attempt>-<variant>-<arch>`. Run/attempt-scoped artifacts
 record the staging tag, locally verified Linux architecture/image ID, and immutable repository digest. PRs, forks,
 and manual feature-branch runs only build and test.
 
@@ -63,11 +63,11 @@ artifacts from earlier attempts are intentionally excluded. Registry updates to
 eight tags are not atomic; if promotion fails midway, rerun the entire workflow
 to refresh the complete set. Staging tags are not public compatibility tags.
 
-Publication contract tests run with `python3 -m unittest discover -s .github/tests -v`.
-For an opt-in real registry test, run `python3 .github/tests/local_registry.py`
-with Docker and Buildx available. It creates/removes a loopback-only `registry:2`
-container and verifies promotion of 16 synthetic scratch manifests, without
-production credentials or WordPress builds.
+The native builder, staging and publisher are shared Bash/`jq` tooling in
+[kool-dev/kool](https://github.com/kool-dev/kool/tree/main/.github/actions),
+pinned to one immutable commit in the workflow. No Python release tooling is
+required. Shared contract/loopback-registry tests run there; WordPress's template
+generation and native runtime checks remain here.
 
 The existing PHP 8.1 tags are retained, but PHP 8.1 is end-of-life and its Kool
 parent is no longer rebuilt by docker-php. Rebuilding WordPress cannot patch an
