@@ -79,15 +79,7 @@ class PublicationTests(unittest.TestCase):
     def test_exact_digest_promotion(self):
         releases = publish.plan(records(), "123", "2")
 
-        def docker(*args):
-            if "--raw" in args:
-                return json.dumps({"mediaType": "application/vnd.oci.image.manifest.v1+json"})
-            if "inspect" in args:
-                arch = next(a for _, images in releases for a, d in images if d in args)
-                return json.dumps({"os": "linux", "architecture": arch})
-            return ""
-
-        with patch.object(publish, "docker", side_effect=docker) as mock:
+        with patch.object(publish, "docker", return_value="") as mock:
             publish.promote(releases)
         calls = [c.args for c in mock.call_args_list]
         self.assertEqual(len(calls), 8)
