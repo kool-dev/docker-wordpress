@@ -46,23 +46,26 @@ check the CI/CD run before treating published tags as refreshed.
 
 Only non-PR runs on this repository's `master` can log in or publish. After all
 checks in each native job pass, it pushes the tested image to a staging tag:
-`ci-wordpress-<run_id>-<run_attempt>-<variant>-<arch>`. Run/attempt-scoped artifacts
-record the staging tag, architecture, and immutable repository digest. PRs, forks,
+`ci-docker-wordpress-<run_id>-<run_attempt>-<variant>-<arch>`. Run/attempt-scoped artifacts
+record the staging tag, locally verified Linux architecture/image ID, and immutable repository digest. PRs, forks,
 and manual feature-branch runs only build and test.
 
 After all 16 native jobs succeed, publication validates all eight AMD64/ARM64
-pairs and their remote image architectures before changing any stable tag.
+pairs and their tested local platform/image-ID records before changing any stable tag.
 Stable manifests reference those exact tested digests; publication never rebuilds.
+Publication trusts the complete staging artifacts rather than performing 32
+redundant remote inspections. Manifest assembly still reads Docker Hub, so its
+pull quota can still apply. The publisher uses the Docker driver, avoiding an
+extra BuildKit container image pull.
+
 If a run partially fails, **rerun the entire workflow**, not just failed jobs:
 artifacts from earlier attempts are intentionally excluded. Registry updates to
 eight tags are not atomic; if promotion fails midway, rerun the entire workflow
 to refresh the complete set. Staging tags are not public compatibility tags.
 
-Publication contract tests run with `python3 -m unittest discover -s .github/tests -v`.
-For an opt-in real registry test, run `python3 .github/tests/local_registry.py`
-with Docker and Buildx available. It creates/removes a loopback-only `registry:2`
-container and verifies promotion of 16 synthetic scratch manifests, without
-production credentials or WordPress builds.
+CI uses [shared Bash/`jq` actions](https://github.com/kool-dev/action/blob/master/image-ci.md),
+pinned in the workflow. Release tests live there; WordPress generation and native
+runtime checks stay here.
 
 The existing PHP 8.1 tags are retained, but PHP 8.1 is end-of-life and its Kool
 parent is no longer rebuilt by docker-php. Rebuilding WordPress cannot patch an
