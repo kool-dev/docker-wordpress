@@ -63,11 +63,9 @@ artifacts from earlier attempts are intentionally excluded. Registry updates to
 eight tags are not atomic; if promotion fails midway, rerun the entire workflow
 to refresh the complete set. Staging tags are not public compatibility tags.
 
-The native builder, staging and publisher are shared Bash/`jq` tooling in
-[kool-dev/action](https://github.com/kool-dev/action/blob/master/image-ci.md),
-pinned to one immutable commit in the workflow. No Python release tooling is
-required. Shared contract/loopback-registry tests run there; WordPress's template
-generation and native runtime checks remain here.
+CI uses [shared Bash/`jq` actions](https://github.com/kool-dev/action/blob/master/image-ci.md),
+pinned in the workflow. Release tests live there; WordPress generation and native
+runtime checks stay here.
 
 The existing PHP 8.1 tags are retained, but PHP 8.1 is end-of-life and its Kool
 parent is no longer rebuilt by docker-php. Rebuilding WordPress cannot patch an
