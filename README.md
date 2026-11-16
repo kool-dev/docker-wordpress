@@ -64,7 +64,7 @@ eight tags are not atomic; if promotion fails midway, rerun the entire workflow
 to refresh the complete set. Staging tags are not public compatibility tags.
 
 The native builder, staging and publisher are shared Bash/`jq` tooling in
-[kool-dev/kool](https://github.com/kool-dev/kool/tree/main/.github/actions),
+[kool-dev/action](https://github.com/kool-dev/action/blob/master/image-ci.md),
 pinned to one immutable commit in the workflow. No Python release tooling is
 required. Shared contract/loopback-registry tests run there; WordPress's template
 generation and native runtime checks remain here.
